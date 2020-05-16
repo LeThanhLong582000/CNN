@@ -5,8 +5,8 @@ import cv2
 from keras.layers import Conv2D, MaxPooling2D, Activation, Flatten, Dense
 
 C = 2
-N = 8
-epochs = 1
+N = 800
+epochs = 1600
 
 TrainSet = []
 TestSet = []
@@ -90,7 +90,7 @@ model.add(Dense(2))
 model.add(Activation('softmax'))
 
 #Train Model
-model.compile(loss= 'categorical_crossentropy', optimizer= keras.optimizers.SGD(), metrics= ['accuracy'])
+model.compile(loss= 'categorical_crossentropy', optimizer= keras.optimizers.SGD(learning_rate= 0.01), metrics= ['accuracy'])
 model.fit(TrainSet, LabelTrain, batch_size= N, epochs= epochs, validation_data= (TestSet, LabelTest))
 
 #Get Score
