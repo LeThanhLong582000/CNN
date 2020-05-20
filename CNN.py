@@ -5,8 +5,8 @@ import cv2
 from keras.layers import Conv2D, MaxPooling2D, Activation, Flatten, Dense
 
 C = 2
-N = 800
-epochs = 1600
+N = 8
+epochs = 1
 
 TrainSet = []
 TestSet = []
@@ -62,23 +62,23 @@ print('Number element of Test Set: ', len(TestSet))
 model = keras.Sequential()
 
 # First Conv
-model.add(Conv2D(8, 3, padding= 'same', input_shape= TrainSet.shape[1:])) # Add Conv layer
+model.add(Conv2D(8, 3, padding= 'valid', input_shape= TrainSet.shape[1:])) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(8, 3, padding= 'same')) # Add Conv layer
+model.add(Conv2D(8, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) #Add Activation Function
 model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
 
 # Second Conv
-model.add(Conv2D(16, 3, padding= 'same')) # Add Conv layer
+model.add(Conv2D(16, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(16, 3, padding= 'same')) # Add Conv layer
+model.add(Conv2D(16, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
 model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
 
 # Third Conv
-model.add(Conv2D(32, 3, padding= 'same')) # Add Conv layer
+model.add(Conv2D(32, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(32, 3, padding= 'same')) # Add Conv layer
+model.add(Conv2D(32, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
 model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
 
