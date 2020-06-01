@@ -2,7 +2,7 @@ import numpy as np
 import keras
 import cv2
 import random
-from keras.layers import Conv2D, MaxPooling2D, Activation, Flatten, Dense
+from keras.layers import Conv2D, MaxPooling2D, Activation, Flatten, Dense, BatchNormalization, Dropout
 
 np.random.seed(42)
 
@@ -31,7 +31,7 @@ for i in ListTrain:
         path = path + 'Ngoclinh\\' + 'S- ' + str(i - int(N / 2)) + '.jpg'
         LabelTrain.append([0, 1])
     img = cv2.imread(path, 1)
-    img = cv2.resize(img, (156, 156))
+    img = cv2.resize(img, (213, 213))
     TrainSet.append(img)
 
 LabelTrain = np.array(LabelTrain)
@@ -52,7 +52,7 @@ for i in ListTest:
         path = path + 'Ngoclinh\\' + 'S- 1 (' + str(i - int(N / 8)) + ').jpg'
         LabelTest.append([0, 1])
     img = cv2.imread(path, 1)
-    img = cv2.resize(img, (156, 156))
+    img = cv2.resize(img, (213, 213))
     TestSet.append(img)
 
 LabelTest = np.array(LabelTest)
@@ -66,34 +66,37 @@ model = keras.Sequential()
 # First Conv
 model.add(Conv2D(16, 3, padding= 'valid', input_shape= TrainSet.shape[1:])) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(16, 3, padding= 'valid')) # Add Conv layer
-model.add(Activation('relu')) # Add Activation Function
-model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
+model.add(BatchNormalization()) # Normalize data
+model.add(MaxPooling2D(pool_size= (3, 3))) # Add Pooling layer
+model.add(Dropout(0.2)) # Dropout
 
 # Second Conv
 model.add(Conv2D(32, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(32, 3, padding= 'valid')) # Add Conv layer
-model.add(Activation('relu')) # Add Activation Function
-model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
+model.add(BatchNormalization()) # Normalize data
+model.add(MaxPooling2D(pool_size= (3, 3))) # Add Pooling layer
+model.add(Dropout(0.2)) # Dropout
 
 # Third Conv
 model.add(Conv2D(64, 3, padding= 'valid')) # Add Conv layer
 model.add(Activation('relu')) # Add Activation Function
-model.add(Conv2D(64, 3, padding= 'valid')) # Add Conv layer
-model.add(Activation('relu')) # Add Activation Function
-model.add(MaxPooling2D(pool_size= (2, 2))) # Add Pooling layer
+model.add(BatchNormalization()) # Normalize data
+model.add(MaxPooling2D(pool_size= (3, 3))) # Add Pooling layer
+model.add(Dropout(0.2)) # Dropout
 
 # Full Conected
 model.add(Flatten()) # Flatten
-model.add(Dense(128))
+model.add(Dense(512))
 model.add(Activation('relu'))
-model.add(Dense(2))
+model.add(Dense(C))
 model.add(Activation('softmax'))
 
+# Model properties
+model.summary()
+
 # Train Model
-model.compile(loss= 'categorical_crossentropy', optimizer= keras.optimizers.Adam(learning_rate= 0.01), metrics= ['accuracy'])
-model.fit(TrainSet, LabelTrain, batch_size= N, epochs= epochs, validation_data= (TestSet, LabelTest))
+model.compile(loss= 'binary_crossentropy', optimizer= keras.optimizers.Adam(learning_rate= 0.0005), metrics= ['accuracy'])
+model.fit(TrainSet, LabelTrain, batch_size= 32, epochs= epochs, validation_data= (TestSet, LabelTest))
 
 # Get Score
 score = model.evaluate(TestSet, LabelTest)
